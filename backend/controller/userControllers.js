@@ -103,9 +103,11 @@ export const updateProfile = TryCatch(async (req, res) => {
 
   await user.save();
 
+  const updatedUser = await User.findById(req.user._id).select("-password");
+
   res.json({
     message: "Profile Updated",
-    user,
+    user: updatedUser,
   });
 });
 
