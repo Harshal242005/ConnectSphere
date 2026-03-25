@@ -43,12 +43,6 @@ export const sendMessage = TryCatch(async (req, res) => {
     },
   });
 
-  const reciverSocketId = getReciverSocketId(recieverId);
-
-  if (reciverSocketId) {
-    io.to(reciverSocketId).emit("newMessage", newMessage);
-  }
-
   res.status(201).json(newMessage);
 });
 

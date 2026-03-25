@@ -40,9 +40,11 @@ export const registerUser = TryCatch(async (req, res) => {
 
     generateToken(user._id, res);
 
+    const userResponse = await User.findById(user._id).select("-password");
+
     res.status(201).json({
       message: "User registered successfully",
-      user,
+      user: userResponse,
     });
 
 
@@ -71,10 +73,13 @@ export const loginUser = TryCatch(async (req, res) => {
     }
 
 
-    generateToken(user._id, res)
+    generateToken(user._id, res);
+
+    const userResponse = await User.findById(user._id).select("-password");
+
     res.json({
         message: "User logged in successfully",
-        user,
+        user: userResponse,
     });
 
 

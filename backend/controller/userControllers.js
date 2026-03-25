@@ -1,16 +1,12 @@
 import TryCatch from "../utils/TryCatch.js";
 import User from "../models/userModel.js";
-import { log } from "console";
 import getDataUrl from "../utils/urlGenerator.js";
+import cloudinary from "cloudinary";
 import bcrypt from "bcrypt";
 
 export const myProfile = TryCatch(async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id).select("-password");
-    res.status(200).json({ user });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+  const user = await User.findById(req.user._id).select("-password");
+  res.status(200).json({ user });
 });
 
 export const userProfile = TryCatch(async (req, res) => {
@@ -107,9 +103,11 @@ export const updateProfile = TryCatch(async (req, res) => {
 
   await user.save();
 
+  const updatedUser = await User.findById(req.user._id).select("-password");
+
   res.json({
     message: "Profile Updated",
-    user,
+    user: updatedUser,
   });
 });
 
