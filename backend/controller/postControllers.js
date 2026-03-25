@@ -63,8 +63,14 @@ export const deletePost = TryCatch(async (req, res) => {
 });
 
 export const getAllPosts = TryCatch(async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
   const posts = await Post.find({ type: "post" })
     .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
     .populate("owner", "-password")
     .populate({
       path: "comments.user",
@@ -73,13 +79,25 @@ export const getAllPosts = TryCatch(async (req, res) => {
 
   const reels = await Post.find({ type: "reel" })
     .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
     .populate("owner", "-password")
     .populate({
       path: "comments.user",
       select: "-password",
     });
 
-  res.json({ posts, reels });
+  const totalPosts = await Post.countDocuments({ type: "post" });
+  const totalReels = await Post.countDocuments({ type: "reel" });
+
+  res.json({
+    posts,
+    reels,
+    page,
+    limit,
+    totalPosts,
+    totalReels,
+  });
 });
 
 export const likeUnlikePost = TryCatch(async (req, res) => {
