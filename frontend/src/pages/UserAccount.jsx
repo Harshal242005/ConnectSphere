@@ -9,6 +9,8 @@ import { UserData } from "../context/UserContext";
 import Modal from "../components/Modal";
 import { SocketData } from "../context/SocketContext";
 
+axios.defaults.withCredentials = true;
+
 const UserAccount = ({ user: loggedInUser }) => {
   const navigate = useNavigate();
 

@@ -11,7 +11,7 @@ const io = new Server(server, {
     origin: [
       "http://localhost:5173",
       "http://localhost:7000",
-      "https://mern-social-3e3m.onrender.com",
+    
     ],
     methods: ["GET", "POST"],
     credentials: true,

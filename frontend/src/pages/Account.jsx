@@ -10,6 +10,8 @@ import { Loading } from "../components/Loading";
 import { CiEdit } from "react-icons/ci";
 import toast from "react-hot-toast";
 
+axios.defaults.withCredentials = true;
+
 const Account = ({ user }) => {
   const navigate = useNavigate();
 

@@ -2,6 +2,8 @@ import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
+axios.defaults.withCredentials = true;
+
 const UserContext = createContext();
 
 export const UserContextProvider = ({ children }) => {

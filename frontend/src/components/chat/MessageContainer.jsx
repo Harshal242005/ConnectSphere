@@ -6,6 +6,8 @@ import Message from "./Message";
 import MessageInput from "./MessageInput";
 import { SocketData } from "../../context/SocketContext";
 
+axios.defaults.withCredentials = true;
+
 const MessageContainer = ({ selectedChat, setChats }) => {
   const [messages, setMessages] = useState([]);
   const { user } = UserData();

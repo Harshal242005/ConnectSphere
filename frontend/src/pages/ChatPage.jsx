@@ -6,6 +6,8 @@ import Chat from "../components/chat/Chat.jsx";
 import MessageContainer from "../components/chat/MessageContainer.jsx";
 import { SocketData } from "../context/SocketContext";
 
+axios.defaults.withCredentials = true;
+
 const ChatPage = ({ user }) => {
   const { createChat, selectedChat, setSelectedChat, chats, setChats } =
     ChatData();
