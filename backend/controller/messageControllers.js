@@ -1,6 +1,7 @@
 import { Chat } from "../models/ChatModel.js";
 import { Messages } from "../models/Messages.js";
 import TryCatch from "../utils/TryCatch.js";
+import { getReciverSocketId, io } from "../socket/socket.js";
 
 export const sendMessage = TryCatch(async (req, res) => {
   const { recieverId, message } = req.body;

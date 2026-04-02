@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export const connectDB = async () => {
+ const connectDB = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URL, {
           dbName: "mern-social",
@@ -12,3 +12,5 @@ export const connectDB = async () => {
         process.exit(1); // Exit the process with failure
     }       
 };
+
+export default connectDB;   
