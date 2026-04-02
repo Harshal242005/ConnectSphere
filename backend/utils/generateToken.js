@@ -9,11 +9,13 @@ const generateToken = (id, res) => {
 
     })
 
+    const isProduction = process.env.NODE_ENV === "production";
+
     res.cookie("token", token,{
         maxAge: 15 * 24 * 60 * 60 * 1000, //15 days
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
     })
 
     
