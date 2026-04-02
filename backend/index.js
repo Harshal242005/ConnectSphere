@@ -24,17 +24,26 @@ cloudinary.v2.config({
   api_secret: process.env.Cloudinary_Secret,
 });
 
-
-
-
-
-
+// Trust reverse proxies (Render, Railway, Heroku, etc.)
+// so that secure cookies work behind HTTPS-terminating proxies
+app.set("trust proxy", 1);
 
 import cors from "cors";
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:7000",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: "http://localhost:5173", // your frontend
+    origin: function (origin, callback) {
+      // Allow requests with no origin (same-origin, mobile apps, curl)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   }),
 );
