@@ -99,6 +99,7 @@ const MessageContainer = ({ selectedChat, setChats }) => {
                       key={e._id}
                       message={e.text}
                       ownMessage={e.sender === user._id}
+                      createdAt={e.createdAt}
                     />
                   ))}
               </div>

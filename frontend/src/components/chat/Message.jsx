@@ -1,6 +1,13 @@
 import React from "react";
 
-const Message = ({ ownMessage, message }) => {
+const Message = ({ ownMessage, message, createdAt }) => {
+  const time = createdAt
+    ? new Date(createdAt).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : "";
+
   return (
     <div className={`mb-2 ${ownMessage ? "text-right" : "text-left"}`}>
       <span
@@ -10,6 +17,7 @@ const Message = ({ ownMessage, message }) => {
       >
         {message}
       </span>
+      <div className="text-xs text-gray-400 mt-1">{time}</div>
     </div>
   );
 };
