@@ -21,10 +21,7 @@ cloudinary.v2.config({
 // ✅ cors FIRST before everything
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://connect-sphere-1-9wh43cemi-harshals-projects-da377ba9.vercel.app",
-    ],
+    origin: ["http://localhost:5173", "https://connect-sphere-1.vercel.app"],
 
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -36,10 +33,7 @@ app.use(
 app.options(
   /.*/,
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://connect-sphere-1-9wh43cemi-harshals-projects-da377ba9.vercel.app",
-    ],
+    origin: ["http://localhost:5173", "https://connect-sphere-1.vercel.app"],
 
     credentials: true,
   }),
