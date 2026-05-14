@@ -10,7 +10,7 @@ const io = new Server(server, {
   cors: {
     origin: [
       "http://localhost:5173",
-      "https://connectsphere-1-uw0e.onrender.com",
+      "https://connect-sphere-1-9wh43cemi-harshals-projects-da377ba9.vercel.app",
     ],
     methods: ["GET", "POST"],
     credentials: true,
