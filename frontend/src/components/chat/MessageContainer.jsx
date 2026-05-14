@@ -94,14 +94,51 @@ const MessageContainer = ({ selectedChat, setChats }) => {
                 className="flex flex-col gap-4 my-4 h-[400px] overflow-y-auto border border-gray-300 bg-gray-100 p-3"
               >
                 {messages &&
-                  messages.map((e) => (
-                    <Message
-                      key={e._id}
-                      message={e.text}
-                      ownMessage={e.sender === user._id}
-                      createdAt={e.createdAt}
-                    />
-                  ))}
+                  (() => {
+                    let lastDate = null;
+                    return messages.map((e) => {
+                      const messageDate = new Date(e.createdAt);
+                      const today = new Date();
+                      const yesterday = new Date();
+                      yesterday.setDate(today.getDate() - 1);
+
+                      const isToday =
+                        messageDate.toDateString() === today.toDateString();
+                      const isYesterday =
+                        messageDate.toDateString() === yesterday.toDateString();
+                      const dateStr = isToday
+                        ? "Today"
+                        : isYesterday
+                          ? "Yesterday"
+                          : messageDate.toLocaleDateString([], {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            });
+
+                      const showDateSeparator = lastDate !== dateStr;
+                      lastDate = dateStr;
+
+                      return (
+                        <React.Fragment key={e._id}>
+                          {showDateSeparator && (
+                            <div className="flex items-center gap-2 my-2">
+                              <div className="flex-1 h-px bg-gray-300" />
+                              <span className="text-xs text-gray-500 px-2">
+                                {dateStr}
+                              </span>
+                              <div className="flex-1 h-px bg-gray-300" />
+                            </div>
+                          )}
+                          <Message
+                            message={e.text}
+                            ownMessage={e.sender === user._id}
+                            createdAt={e.createdAt}
+                          />
+                        </React.Fragment>
+                      );
+                    });
+                  })()}
               </div>
               <MessageInput
                 setMessages={setMessages}
