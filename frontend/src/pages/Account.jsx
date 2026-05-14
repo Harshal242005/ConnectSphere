@@ -10,9 +10,9 @@ import { Loading } from "../components/Loading";
 import { CiEdit } from "react-icons/ci";
 import toast from "react-hot-toast";
 
-axios.defaults.withCredentials = true;
-
+const defaultAvatar = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 const Account = ({ user }) => {
+  if (!user) return <Loading />;  
   const navigate = useNavigate();
 
   const { logoutUser, updateProfilePic, updateProfileName } = UserData();
@@ -60,11 +60,11 @@ const Account = ({ user }) => {
   const [followingsData, setFollowingsData] = useState([]);
 
   async function followData() {
+    if (!user?._id) return; // ✅ double guard
     try {
       const { data } = await axios.get("/api/user/followdata/" + user._id);
-
       setFollowersData(data.followers);
-      setFollowingsData(data.followings);
+      setFollowingsData(data.following);
     } catch (error) {
       console.log(error);
     }
@@ -86,8 +86,9 @@ const Account = ({ user }) => {
   };
 
   useEffect(() => {
+    if (!user?._id) return; 
     followData();
-  }, [user]);
+  }, [user?._id]);
 
   const [showInput, setShowInput] = useState(false);
   const [name, setName] = useState(user.name ? user.name : "");
@@ -138,14 +139,14 @@ const Account = ({ user }) => {
                   {show1 && (
                     <Modal
                       value={followingsData}
-                      title={"Followings"}
+                      title={"Following"}
                       setShow={setShow1}
                     />
                   )}
                   <div className="bg-white flex justify-between gap-4 p-8 rounded-lg shadow-md max-w-md">
                     <div className="image flex flex-col justify-between mb-4 gap-4">
                       <img
-                        src={user.profilePic.url}
+                        src={user?.profilePic?.url || defaultAvatar}
                         alt=""
                         className="w-[180px] h-[180px] rounded-full"
                       />
@@ -199,13 +200,13 @@ const Account = ({ user }) => {
                         className="text-gray-500 text-sm cursor-pointer"
                         onClick={() => setShow(true)}
                       >
-                        {user.followers.length} follower
+                        {followersData?.length || 0} follower
                       </p>
                       <p
                         className="text-gray-500 text-sm cursor-pointer"
                         onClick={() => setShow1(true)}
                       >
-                        {user.followings.length} following
+                        {followingsData?.length || 0} following
                       </p>
                       <button
                         onClick={logoutHandler}

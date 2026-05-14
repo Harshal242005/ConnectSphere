@@ -18,6 +18,7 @@ const PostCard = ({ type, value }) => {
   const [show, setShow] = useState(false);
   const { user } = UserData();
   const { likePost, addComment, deletePost, loading, fetchPosts } = PostData();
+   const { onlineUsers = [] } = SocketData();
 
   const formatDate = format(new Date(value.createdAt), "MMMM do");
 
@@ -80,7 +81,7 @@ const PostCard = ({ type, value }) => {
     setOpen(false);
   };
 
-  const { onlineUsers } = SocketData();
+
 
   return (
     <div className="bg-gray-100 flex items-center justify-center pt-3 pb-14">

@@ -1,9 +1,10 @@
 import React from "react";
+import  { useContext } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import { UserData } from "./context/UserContext";
+import { UserContext } from "./context/UserContext.jsx"; 
 import Account from "./pages/Account";
 import NavigationBar from "./components/NavigationBar";
 import NotFound from "./components/NotFound";
@@ -14,8 +15,8 @@ import Search from "./pages/Search";
 import ChatPage from "./pages/ChatPage";
 
 const App = () => {
-  const { loading, isAuth, user } = UserData();
-
+  const { loading, isAuth, user } = useContext(UserContext); // ✅ direct useContext
+  console.log("loading:", loading, "isAuth:", isAuth);
   return (
     <>
       {loading ? (

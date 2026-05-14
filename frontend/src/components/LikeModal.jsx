@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { LoadingAnimation } from "./Loading";
 
 
-axios.defaults.withCredentials = true;
 
 const LikeModal = ({ isOpen, onClose, id }) => {
   if (!isOpen) return null;

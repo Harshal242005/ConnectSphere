@@ -1,12 +1,12 @@
 import axios from "axios";
 import { createContext, useContext, useState } from "react";
 import toast from "react-hot-toast";
-
 const ChatContext = createContext();
 
 export const ChatContextProvider = ({ children }) => {
   const [chats, setChats] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   async function createChat(id) {
     try {
@@ -21,7 +21,15 @@ export const ChatContextProvider = ({ children }) => {
   }
   return (
     <ChatContext.Provider
-      value={{ createChat, selectedChat, setSelectedChat, chats, setChats }}
+      value={{
+        createChat,
+        selectedChat,
+        setSelectedChat,
+        chats,
+        setChats,
+        unreadCount,
+        setUnreadCount,
+      }}
     >
       {children}
     </ChatContext.Provider>

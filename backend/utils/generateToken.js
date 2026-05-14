@@ -12,8 +12,8 @@ const generateToken = (id, res) => {
     res.cookie("token", token,{
         maxAge: 15 * 24 * 60 * 60 * 1000, //15 days
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        secure: false,
+        sameSite: "lax",
     })
 
     

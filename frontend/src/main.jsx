@@ -2,21 +2,27 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
+import "./axiosConfig";
 import { UserContextProvider } from "./context/UserContext.jsx";
 import { PostContextProvider } from "./context/PostContext.jsx";
 import { ChatContextProvider } from "./context/ChatContext.jsx";
 import { SocketContextProvider } from "./context/SocketContext.jsx";
 
+import { Toaster } from "react-hot-toast";
+
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+  <>
+    <Toaster />
     <UserContextProvider>
-      <PostContextProvider>
-        <ChatContextProvider>
-          <SocketContextProvider>
+      <SocketContextProvider>
+       
+        <PostContextProvider>
+          <ChatContextProvider>
             <App />
-          </SocketContextProvider>
-        </ChatContextProvider>
-      </PostContextProvider>
-    </UserContextProvider>
-  </React.StrictMode>,
+          </ChatContextProvider>
+        </PostContextProvider>
+      </SocketContextProvider>{" "}
+    
+    </UserContextProvider>{" "}
+  </>,
 );

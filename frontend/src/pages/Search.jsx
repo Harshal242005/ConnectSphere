@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { LoadingAnimation } from "../components/Loading";
 
-axios.defaults.withCredentials = true;
 
 const Search = () => {
   const [users, setUsers] = useState([]);

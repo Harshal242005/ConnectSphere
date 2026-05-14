@@ -3,6 +3,7 @@ import User from "../models/userModel.js";
 import { log } from "console";
 import getDataUrl from "../utils/urlGenerator.js";
 import bcrypt from "bcrypt";
+import cloudinary from "cloudinary";
 
 export const myProfile = TryCatch(async (req, res) => {
   try {
@@ -78,26 +79,20 @@ export const userFolloerandFollowingData = TryCatch(async (req, res) => {
   });
 });
 
+
 export const updateProfile = TryCatch(async (req, res) => {
   const user = await User.findById(req.user._id);
-
   const { name } = req.body;
 
-  if (name) {
-    user.name = name;
-  } else {
-    return res.status(400).json({ message: "Name is required" });
-  }
+  // ✅ only update name if provided — no error if missing
+  if (name) user.name = name;
 
   const file = req.file;
-
   if (file) {
     const fileUrl = getDataUrl(file);
-
-    if (user.profilePic.id) {
+    if (user.profilePic?.id) {
       await cloudinary.v2.uploader.destroy(user.profilePic.id);
     }
-
     const myCloud = await cloudinary.v2.uploader.upload(fileUrl.content);
     user.profilePic = {
       id: myCloud.public_id,
@@ -105,11 +100,16 @@ export const updateProfile = TryCatch(async (req, res) => {
     };
   }
 
-  await user.save();
+  // ✅ make sure something is being updated
+  if (!name && !file) {
+    return res.status(400).json({ message: "Please provide name or file" });
+  }
 
+  await user.save();
+  const updatedUser = await User.findById(req.user._id).select("-password");
   res.json({
     message: "Profile Updated",
-    user,
+    user: updatedUser,
   });
 });
 

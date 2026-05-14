@@ -1,8 +1,7 @@
 import { Chat } from "../models/ChatModel.js";
 import { Messages } from "../models/Messages.js";
 import TryCatch from "../utils/TryCatch.js";
-import { getReciverSocketId, io } from "../socket/socket.js";
-
+import { getReciverSocketId, io, userSocketMap } from "../socket/socket.js";
 export const sendMessage = TryCatch(async (req, res) => {
   const { recieverId, message } = req.body;
 
@@ -44,7 +43,12 @@ export const sendMessage = TryCatch(async (req, res) => {
     },
   });
 
+  console.log("Full userSocketMap at send time:", userSocketMap);
+  console.log("recieverId:", recieverId.toString());
+
+
   const reciverSocketId = getReciverSocketId(recieverId);
+  console.log("recieverId being looked up:", recieverId); 
 
   if (reciverSocketId) {
     io.to(reciverSocketId).emit("newMessage", newMessage);

@@ -8,9 +8,11 @@ import {
   IoChatbubbleEllipsesOutline,
 } from "react-icons/io5";
 import { RiAccountCircleFill, RiAccountCircleLine } from "react-icons/ri";
+import { ChatData } from "../context/ChatContext"; 
 
 const NavigationBar = () => {
   const [tab, setTab] = useState(window.location.pathname);
+  const { unreadCount } = ChatData();
   return (
     <div className="fixed bottom-0 w-full bg-white py-3">
       <div className="flex justify-around">
@@ -40,15 +42,26 @@ const NavigationBar = () => {
           </span>
         </Link>
         <Link
-          onClick={() => setTab("/chat")}
+          onClick={() => {
+            setTab("/chat");
+            setUnreadCount(0);
+          }}
           to={"/chat"}
           className="flex flex-col items-center text-2xl"
         >
-          <span>
+          <span className="relative">
+            {" "}
+            {/* 👈 change span to relative */}
             {tab === "/chat" ? (
               <IoChatbubbleEllipses />
             ) : (
               <IoChatbubbleEllipsesOutline />
+            )}
+            {/* 👈 add this badge */}
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
             )}
           </span>
         </Link>

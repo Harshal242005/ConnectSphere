@@ -1,9 +1,6 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-
-axios.defaults.withCredentials = true;
-
 const PostContext = createContext();
 
 export const PostContextProvider = ({ children }) => {
@@ -19,8 +16,10 @@ export const PostContextProvider = ({ children }) => {
       setReels(data.reels);
       setLoading(false);
     } catch (error) {
-      console.log(error);
-      setLoading(false);
+      if (error?.response?.status !== 403) {
+        console.log(error);
+      }
+      setLoading(false); // ✅ always stop loading
     }
   }
 
@@ -38,9 +37,11 @@ export const PostContextProvider = ({ children }) => {
       setCaption("");
       setAddLoading(false);
     } catch (error) {
-      toast.error(error.response.data.message);
-      setAddLoading(false);
+      toast.error(error?.response?.data?.message || "Something went wrong");
     }
+      finally {
+            setAddLoading(false);
+        }
   }
 
   async function likePost(id) {
@@ -50,7 +51,7 @@ export const PostContextProvider = ({ children }) => {
       toast.success(data.message);
       fetchPosts();
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message || "Something went wrong"); 
     }
   }
 
@@ -64,7 +65,7 @@ export const PostContextProvider = ({ children }) => {
       setComment("");
       setShow(false);
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message || "Something went wrong"); 
     }
   }
 
@@ -77,7 +78,7 @@ export const PostContextProvider = ({ children }) => {
       fetchPosts();
       setLoading(false);
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message || "Something went wrong"); 
       setLoading(false);
     }
   }
@@ -91,7 +92,7 @@ export const PostContextProvider = ({ children }) => {
       toast.success(data.message);
       fetchPosts();
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message || "Something went wrong"); 
     }
   }
 

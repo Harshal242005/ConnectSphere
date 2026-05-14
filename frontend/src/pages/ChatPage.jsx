@@ -6,7 +6,7 @@ import Chat from "../components/chat/Chat.jsx";
 import MessageContainer from "../components/chat/MessageContainer.jsx";
 import { SocketData } from "../context/SocketContext";
 
-axios.defaults.withCredentials = true;
+
 
 const ChatPage = ({ user }) => {
   const { createChat, selectedChat, setSelectedChat, chats, setChats } =
@@ -15,6 +15,8 @@ const ChatPage = ({ user }) => {
   const [users, setUsers] = useState([]);
   const [query, setQuery] = useState("");
   const [search, setSearch] = useState(false);
+  const { unreadCount, setUnreadCount } = ChatData();
+
 
   async function fetchAllUsers() {
     try {
@@ -49,7 +51,44 @@ const ChatPage = ({ user }) => {
     getAllChats();
   }
 
-  const { onlineUsers, socket } = SocketData();
+  const { onlineUsers = [], socket = null } = SocketData() || {};
+
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("newMessage", (message) => {
+      console.log("selectedChat:", selectedChat); // 👈
+      console.log("message.chatId:", message.chatId); // 👈
+      console.log(
+        "condition:",
+        !selectedChat || selectedChat._id !== message.chatId,
+      ); // 👈
+
+      if (!selectedChat || selectedChat._id !== message.chatId) {
+        
+        setUnreadCount((prev) =>{ 
+          console.log("incrementing unread, prev:", prev);  
+          return prev + 1;}); // 👈 increment
+      }
+
+      setChats((prev) => {
+        const updated = prev.map((chat) =>
+          chat._id === message.chatId
+            ? { ...chat, latestMessage: message }
+            : chat,
+        );
+        return updated.sort(
+          (a, b) =>
+            new Date(b.latestMessage?.createdAt) -
+            new Date(a.latestMessage?.createdAt),
+        );
+      });
+    });
+
+    return () => socket.off("newMessage");
+  }, [socket]);
+
   return (
     <div className="w-[100%] md:w-[750px] md:p-4">
       <div className="flex gap-4 mx-auto">

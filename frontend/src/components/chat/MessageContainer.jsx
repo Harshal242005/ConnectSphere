@@ -5,63 +5,52 @@ import { LoadingAnimation } from "../Loading";
 import Message from "./Message";
 import MessageInput from "./MessageInput";
 import { SocketData } from "../../context/SocketContext";
+import { ChatData } from "../../context/ChatContext";
 
 axios.defaults.withCredentials = true;
 
 const MessageContainer = ({ selectedChat, setChats }) => {
+  // ✅ ALL hooks at the top, no conditions before any hook
   const [messages, setMessages] = useState([]);
-  const { user } = UserData();
   const [loading, setLoading] = useState(false);
+  const { user } = UserData();
   const { socket } = SocketData();
+  const messageContainerRef = useRef(null);
+  const { setUnreadCount } = ChatData();
+
 
   useEffect(() => {
+    if (!socket || !selectedChat) return;
+
     socket.on("newMessage", (message) => {
+      console.log("Socket received:", message);
       if (selectedChat._id === message.chatId) {
         setMessages((prev) => [...prev, message]);
       }
 
-      setChats((prev) => {
-        const updatedChat = prev.map((chat) => {
-          if (chat._id === message.chatId) {
-            return {
-              ...chat,
-              latestMessage: {
-                text: message.text,
-                sender: message.sender,
-              },
-            };
-          }
-          return chat;
-        });
-        return updatedChat;
-      });
+      setChats((prev) =>
+        prev.map((chat) =>
+          chat._id === message.chatId
+            ? {
+                ...chat,
+                latestMessage: {
+                  text: message.text,
+                  sender: message.sender,
+                },
+              }
+            : chat,
+        ),
+      );
     });
 
     return () => socket.off("newMessage");
   }, [socket, selectedChat, setChats]);
 
-  async function fetchMessages() {
-    setLoading(true);
-    try {
-      const { data } = await axios.get(
-        "/api/messages/" + selectedChat.users[0]._id,
-      );
-
-      setMessages(data);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-  }
-
-  console.log(messages);
-
   useEffect(() => {
+    if (!selectedChat) return;
     fetchMessages();
+    setUnreadCount(0);
   }, [selectedChat]);
-
-  const messageContainerRef = useRef(null);
 
   useEffect(() => {
     if (messageContainerRef.current) {
@@ -69,13 +58,28 @@ const MessageContainer = ({ selectedChat, setChats }) => {
         messageContainerRef.current.scrollHeight;
     }
   }, [messages]);
+
+  async function fetchMessages() {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(
+        "/api/messages/" + selectedChat.users[0]._id,
+      );
+      setMessages(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div>
       {selectedChat && (
         <div className="flex flex-col">
           <div className="flex w-full h-12 items-center gap-3">
             <img
-              src={selectedChat.users[0].profilePic.url}
+              src={selectedChat.users[0]?.profilePic?.url || ""}
               className="w-8 h-8 rounded-full"
               alt=""
             />
@@ -92,12 +96,12 @@ const MessageContainer = ({ selectedChat, setChats }) => {
                 {messages &&
                   messages.map((e) => (
                     <Message
+                      key={e._id}
                       message={e.text}
-                      ownMessage={e.sender === user._id && true}
+                      ownMessage={e.sender === user._id}
                     />
                   ))}
               </div>
-
               <MessageInput
                 setMessages={setMessages}
                 selectedChat={selectedChat}
