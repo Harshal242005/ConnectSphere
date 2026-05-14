@@ -6,9 +6,10 @@ const PostContext = createContext();
 export const PostContextProvider = ({ children }) => {
   const [posts, setPosts] = useState([]);
   const [reels, setReels] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   async function fetchPosts() {
+    setLoading(true);
     try {
       const { data } = await axios.get("/api/post/all");
 
